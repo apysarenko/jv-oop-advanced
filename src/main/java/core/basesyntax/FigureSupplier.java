@@ -3,44 +3,37 @@ package core.basesyntax;
 import java.util.Random;
 
 public class FigureSupplier {
-    private Random random = new Random();
-    private ColorSupplier colorSupplier = new ColorSupplier();
+    private static final int FIGURE_TYPES_COUNT = 5;
+    private static final int MAX_SIDE_LENGTH = 10;
+    private static final Color DEFAULT_COLOR = Color.WHITE;
+
+    private final Random random = new Random();
+    private final ColorSupplier colorSupplier = new ColorSupplier();
+
+    private int getRandomSide() {
+        return random.nextInt(MAX_SIDE_LENGTH) + 1;
+    }
 
     public Figure getRandomFigure() {
-        final int figureCount = 5;
-        int type = random.nextInt(figureCount);
-        String color = colorSupplier.getRandomColor();
+        int type = random.nextInt(FIGURE_TYPES_COUNT);
+        Color color = colorSupplier.getRandomColor();
 
         switch (type) {
             case 0:
-                double side = 1 + random.nextDouble() * 19;
-                return new Square(color, round(side));
+                return new Circle(color, getRandomSide());
             case 1:
-                double w = 1 + random.nextDouble() * 19;
-                double h = 1 + random.nextDouble() * 19;
-                return new Rectangle(color,round(w), round(h));
+                return new Square(color, getRandomSide());
             case 2:
-                double a = 1 + random.nextDouble() * 19;
-                double b = 1 + random.nextDouble() * 19;
-                return new RightTriangle(color,round(a), round(b));
+                return new Rectangle(color, getRandomSide(), getRandomSide());
             case 3:
-                double r = 1 + random.nextDouble() * 19;
-                return new Circle(color, round(r));
-            case 4:
-                double top = 1 + random.nextDouble() * 19;
-                double bottom = top + random.nextDouble() * 20;
-                double height = 1 + random.nextDouble() * 19;
-                return new IsoscelesTrapezoid(color,round(top), round(bottom), round(height));
+                return new RightTriangle(color, getRandomSide(), getRandomSide());
             default:
-                return getDefaultFigure();
+                return new IsoscelesTrapezoid(color, getRandomSide(),
+                        getRandomSide(), getRandomSide());
         }
     }
 
     public Figure getDefaultFigure() {
-        return new Circle("white", 10.0);
-    }
-
-    private double round(double v) {
-        return Math.round(v * 10.0) / 10.0;
+        return new Circle(DEFAULT_COLOR, MAX_SIDE_LENGTH);
     }
 }
